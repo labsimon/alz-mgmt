@@ -18,7 +18,7 @@ Replacements are denoted by the dollar-dollar curly braces token (e.g. $${starte
 You can define the Azure regions to use throughout the configuration.
 The first location will be used as the primary location, the second as the secondary location, and so on.
 */
-starter_locations = ["francecentral"]
+starter_locations = ["uksouth"]
 
 /*
 --- Custom Replacements ---
@@ -358,6 +358,7 @@ hub_virtual_networks = {
         }
       }
     }
+    
     private_dns_zones = {
       parent_id = "$${dns_resource_group_id}"
       private_link_private_dns_zones_regex_filter = {
@@ -366,10 +367,12 @@ hub_virtual_networks = {
       auto_registration_zone_enabled = "$${primary_private_dns_auto_registration_zone_enabled}"
       auto_registration_zone_name    = "$${primary_auto_registration_zone_name}"
     }
+
     private_dns_resolver = {
       subnet_address_prefix = "$${primary_private_dns_resolver_subnet_address_prefix}"
       name                  = "$${primary_private_dns_resolver_name}"
     }
+
     bastion = {
       subnet_address_prefix = "$${primary_bastion_subnet_address_prefix}"
       name                  = "$${primary_bastion_host_name}"
