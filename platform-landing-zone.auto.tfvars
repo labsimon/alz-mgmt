@@ -358,6 +358,7 @@ hub_virtual_networks = {
         }
       }
     }
+    
     private_dns_zones = {
       parent_id = "$${dns_resource_group_id}"
       private_link_private_dns_zones_regex_filter = {
@@ -366,17 +367,17 @@ hub_virtual_networks = {
       auto_registration_zone_enabled = "$${primary_private_dns_auto_registration_zone_enabled}"
       auto_registration_zone_name    = "$${primary_auto_registration_zone_name}"
     }
+
     private_dns_resolver = {
       subnet_address_prefix = "$${primary_private_dns_resolver_subnet_address_prefix}"
       name                  = "$${primary_private_dns_resolver_name}"
     }
+
     bastion = {
       subnet_address_prefix = "$${primary_bastion_subnet_address_prefix}"
       name                  = "$${primary_bastion_host_name}"
-      zones                 = []
       bastion_public_ip = {
-        name  = "$${primary_bastion_host_public_ip_name}"
-        zones = []
+        name = "$${primary_bastion_host_public_ip_name}"
       }
     }
   }
