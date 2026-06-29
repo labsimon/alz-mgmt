@@ -221,6 +221,11 @@ management_group_settings = {
   policy_assignments_to_modify = {
     alz = {
       policy_assignments = {
+        Deploy-MCSB2-Monitoring = {
+          parameters = {
+            logAnalytics = "$${log_analytics_workspace_id}"
+          }
+        }
         Deploy-MDFC-Config-H224 = {
           parameters = {
             enableAscForServers                         = "DeployIfNotExists"
