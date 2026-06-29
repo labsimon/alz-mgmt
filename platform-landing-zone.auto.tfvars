@@ -193,7 +193,6 @@ management_group_settings = {
     resource_group_name_mdfc                    = "$${asc_export_resource_group_name}"
     resource_group_location                     = "$${starter_location_01}"
     email_security_contact                      = "$${defender_email_security_contact}"
-    logAnalytics                                = "$${log_analytics_workspace_id}"
     /*
     # Example of allowed locations for Sovereign Landing Zones policies
     allowed_locations = [
@@ -202,26 +201,17 @@ management_group_settings = {
     */
   }
   subscription_placement = {
-    identity = {
-      subscription_id       = "$${subscription_id_identity}"
-      management_group_name = "platform"
-    }
-    connectivity = {
-      subscription_id       = "$${subscription_id_connectivity}"
-      management_group_name = "platform"
-    }
     management = {
       subscription_id       = "$${subscription_id_management}"
-      management_group_name = "platform"
-    }
-    security = {
-      subscription_id       = "$${subscription_id_security}"
       management_group_name = "platform"
     }
   }
   policy_assignments_to_modify = {
     alz = {
       policy_assignments = {
+        Deploy-MCSB2-Monitoring = {
+          creation_enabled = false
+        }
         Deploy-MDFC-Config-H224 = {
           parameters = {
             enableAscForServers                         = "DeployIfNotExists"
