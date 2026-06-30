@@ -2,6 +2,11 @@ output "dns_server_ip_address" {
   value = local.connectivity_enabled ? (local.connectivity_hub_and_spoke_vnet_enabled ? module.hub_and_spoke_vnet[0].dns_server_ip_addresses : module.virtual_wan[0].dns_server_ip_address) : null
 }
 
+output "network_manager_ipam_pool_resource_id" {
+  description = "Resource ID of the AVNM IPAM pool. Use this as spoke_ipam_pool_id in the alz-sub-vending repo."
+  value       = var.network_manager_ipam_enabled ? azurerm_network_manager_ipam_pool.this[0].id : null
+}
+
 output "hub_and_spoke_vnet_virtual_network_resource_ids" {
   value = local.connectivity_hub_and_spoke_vnet_enabled ? module.hub_and_spoke_vnet[0].virtual_network_resource_ids : null
 }

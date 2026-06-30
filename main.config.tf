@@ -21,6 +21,11 @@ module "config" {
     management_group_settings       = var.management_group_settings
     tags                            = var.tags
     connectivity_tags               = var.connectivity_tags
+
+    network_manager_name                = var.network_manager_name
+    network_manager_resource_group_name = var.network_manager_resource_group_name
+    network_manager_location            = var.network_manager_location
+    network_manager_ipam_pool_name      = var.network_manager_ipam_pool_name
   }
 
   enable_telemetry = var.enable_telemetry
