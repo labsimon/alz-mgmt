@@ -358,7 +358,7 @@ hub_virtual_networks = {
         }
       }
     }
-    
+
     private_dns_zones = {
       parent_id = "$${dns_resource_group_id}"
       private_link_private_dns_zones_regex_filter = {
@@ -384,6 +384,25 @@ hub_virtual_networks = {
 }
 
 # private_link_private_dns_zone_virtual_network_link_moved_blocks_enabled = true
+
+/*
+--- Connectivity - Network Manager and IPAM ---
+Deploys an Azure Virtual Network Manager (AVNM) and an IPAM pool into the
+connectivity subscription, scoped to the Landing Zones management group.
+Vended landing zone subscriptions allocate non-overlapping spoke address space
+from the IPAM pool instead of hard-coding CIDR ranges.
+NOTE: Microsoft.Network must be registered at the target management group before
+deployment, and the deploying identity needs access to that management group.
+*/
+network_manager_ipam_enabled              = true
+network_manager_name                      = "avnm-$${starter_location_01}"
+network_manager_resource_group_name       = "rg-avnm-$${starter_location_01}"
+network_manager_location                  = "$${starter_location_01}"
+network_manager_scope_management_group_id = "alz"
+network_manager_ipam_pool_name            = "ipam-lz-$${starter_location_01}"
+# Parent address space the IPAM pool carves spoke ranges from.
+# Must not overlap the hub address space (primary_hub_address_space = 10.0.0.0/16).
+network_manager_ipam_pool_address_prefixes = ["10.16.0.0/12"]
 
 enable_telemetry = true
 telemetry_additional_content = {
