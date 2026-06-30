@@ -1,6 +1,9 @@
 module "hub_and_spoke_vnet" {
-  source  = "Azure/avm-ptn-alz-connectivity-hub-and-spoke-vnet/azurerm"
-  version = "0.17.2"
+  # Vendored from Azure/avm-ptn-alz-connectivity-hub-and-spoke-vnet/azurerm v0.17.2.
+  # Local fork adds an ip_tags passthrough on the firewall public IPs so the
+  # platform-injected FirstPartyUsage=/Unprivileged tag (MCAP/sponsored subscriptions)
+  # does not force a (blocked) public IP replacement on every apply.
+  source = "./modules/connectivity-hub-and-spoke-vnet"
 
   count = local.connectivity_hub_and_spoke_vnet_enabled ? 1 : 0
 
