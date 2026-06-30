@@ -313,12 +313,20 @@ hub_virtual_networks = {
       default_ip_configuration = {
         public_ip_config = {
           name = "$${primary_firewall_public_ip_name}"
+          # Match the FirstPartyUsage tag that MCAP/sponsored subscriptions auto-inject
+          # on public IPs, so Terraform doesn't try to replace the (attached) firewall PIP.
+          ip_tags = {
+            FirstPartyUsage = "/Unprivileged"
+          }
         }
       }
       management_ip_enabled = "$${primary_firewall_management_ip_enabled}"
       management_ip_configuration = {
         public_ip_config = {
           name = "$${primary_firewall_management_public_ip_name}"
+          ip_tags = {
+            FirstPartyUsage = "/Unprivileged"
+          }
         }
       }
     }
@@ -359,7 +367,6 @@ hub_virtual_networks = {
       }
     }
 
-
     private_dns_zones = {
       parent_id = "$${dns_resource_group_id}"
       private_link_private_dns_zones_regex_filter = {
@@ -381,6 +388,11 @@ hub_virtual_networks = {
       bastion_public_ip = {
         name  = "$${primary_bastion_host_public_ip_name}"
         zones = []
+        # MCAP/sponsored subscriptions auto-inject this immutable ip_tag on every
+        # public IP. Declaring it here keeps Terraform config in sync with the
+        # platform-injected value so the bastion PIP does not perpetually churn
+        # (and, once the bastion host is attached, avoids PublicIPAddressCannotBeDeleted).
+        ip_tags = { FirstPartyUsage = "/Unprivileged" }
       }
     }
   }

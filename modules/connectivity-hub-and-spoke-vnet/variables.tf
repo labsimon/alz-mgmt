@@ -1,7 +1,87 @@
+variable "default_naming_convention" {
+  type = object({
+    virtual_network_name                                        = optional(string, "vnet-hub-$${location}-$${sequence}")
+    firewall_name                                               = optional(string, "fw-hub-$${location}-$${sequence}")
+    firewall_policy_name                                        = optional(string, "fwp-hub-$${location}-$${sequence}")
+    firewall_public_ip_name                                     = optional(string, "pip-fw-hub-$${location}-$${sequence}")
+    firewall_management_public_ip_name                          = optional(string, "pip-fw-hub-mgmt-$${location}-$${sequence}")
+    route_table_firewall_name                                   = optional(string, "rt-hub-fw-$${location}-$${sequence}")
+    route_table_user_subnets_name                               = optional(string, "rt-hub-std-$${location}-$${sequence}")
+    virtual_network_gateway_express_route_name                  = optional(string, "vgw-hub-er-$${location}-$${sequence}")
+    virtual_network_gateway_express_route_ip_configuration_name = optional(string, "ipcfg-vgw-hub-er-$${location}-$${sequence}")
+    virtual_network_gateway_express_route_public_ip_name        = optional(string, "pip-vgw-hub-er-$${location}-$${sequence}")
+    virtual_network_gateway_vpn_name                            = optional(string, "vgw-hub-vpn-$${location}-$${sequence}")
+    virtual_network_gateway_vpn_ip_configuration_name           = optional(string, "ipcfg-vgw-hub-vpn-$${location}-$${sequence}")
+    virtual_network_gateway_vpn_public_ip_name                  = optional(string, "pip-vgw-hub-vpn-$${location}-$${sequence}")
+    virtual_network_gateway_route_table_name                    = optional(string, "rt-hub-gateway-$${location}-$${sequence}")
+    private_dns_resolver_name                                   = optional(string, "pdr-hub-$${location}-$${sequence}")
+    bastion_host_name                                           = optional(string, "bas-hub-$${location}-$${sequence}")
+    bastion_host_public_ip_name                                 = optional(string, "pip-bas-hub-$${location}-$${sequence}")
+    ddos_protection_plan_name                                   = optional(string, "ddos-hub-$${location}-$${sequence}")
+    nat_gateway_name                                            = optional(string, "natgw-hub-$${location}-$${sequence}")
+  })
+  default     = {}
+  description = <<DESCRIPTION
+(Optional) An object defining default naming conventions for resources created by this module. The following fields are available:
+
+- `virtual_network_name` - The naming convention for hub virtual networks.
+- `firewall_name` - The naming convention for Azure Firewalls.
+- `firewall_policy_name` - The naming convention for Azure Firewall Policies.
+- `firewall_public_ip_name` - The naming convention for Azure Firewall public IPs.
+- `firewall_management_public_ip_name` - The naming convention for Azure Firewall management public IPs.
+- `route_table_firewall_name` - The naming convention for Firewall route tables.
+- `route_table_user_subnets_name` - The naming convention for user subnet route tables.
+- `virtual_network_gateway_express_route_name` - The naming convention for ExpressRoute gateways.
+- `virtual_network_gateway_express_route_ip_configuration_name` - The naming convention for ExpressRoute gateway IP configurations.
+- `virtual_network_gateway_express_route_public_ip_name` - The naming convention for ExpressRoute gateway public IPs.
+- `virtual_network_gateway_vpn_name` - The naming convention for VPN gateways.
+- `virtual_network_gateway_vpn_ip_configuration_name` - The naming convention for VPN gateway IP configurations.
+- `virtual_network_gateway_vpn_public_ip_name` - The naming convention for VPN gateway public IPs.
+- `virtual_network_gateway_route_table_name` - The naming convention for gateway route tables.
+- `private_dns_resolver_name` - The naming convention for private DNS resolvers.
+- `bastion_host_name` - The naming convention for Azure Bastion hosts.
+- `bastion_host_public_ip_name` - The naming convention for Azure Bastion public IPs.
+- `ddos_protection_plan_name` - The naming convention for DDoS Protection Plans.
+- `nat_gateway_name` - The naming convention for NAT Gateways.
+
+The following placeholders can be used in the naming conventions:
+  - `$${location}` - The location of the resource.
+  - `$${sequence}` - A sequence number to ensure uniqueness.
+DESCRIPTION
+}
+
+variable "default_naming_convention_sequence" {
+  type = object({
+    starting_number = number
+    padding_format  = string
+  })
+  default = {
+    starting_number = 1
+    padding_format  = "%03d"
+  }
+  description = <<DESCRIPTION
+(Optional) An object defining the starting number and padding format for the sequence placeholder in naming conventions.
+
+- `starting_number` - The starting number for the sequence. Default `1`.
+- `padding_format` - The printf-style format string for padding the sequence number. Default `"%03d"` (e.g., 001, 002, 003).
+DESCRIPTION
+}
+
+variable "enable_telemetry" {
+  type        = bool
+  default     = true
+  description = <<DESCRIPTION
+This variable controls whether or not telemetry is enabled for the module.
+For more information see <https://aka.ms/avm/telemetryinfo>.
+If it is set to false, then no telemetry will be collected.
+DESCRIPTION
+  nullable    = false
+}
+
 variable "hub_and_spoke_networks_settings" {
   type = object({
     enabled_resources = optional(object({
-      ddos_protection_plan = optional(any, true)
+      ddos_protection_plan = optional(bool, true)
     }), {})
     ddos_protection_plan = optional(object({
       name                = optional(string)
@@ -31,14 +111,14 @@ DESCRIPTION
 variable "hub_virtual_networks" {
   type = map(object({
     enabled_resources = optional(object({
-      firewall                              = optional(any, true)
-      firewall_policy                       = optional(any, true)
-      bastion                               = optional(any, true)
-      virtual_network_gateway_express_route = optional(any, true)
-      virtual_network_gateway_vpn           = optional(any, true)
-      private_dns_zones                     = optional(any, true)
-      private_dns_resolver                  = optional(any, true)
-      nat_gateway                           = optional(any, false)
+      firewall                              = optional(bool, true)
+      firewall_policy                       = optional(bool, true)
+      bastion                               = optional(bool, true)
+      virtual_network_gateway_express_route = optional(bool, true)
+      virtual_network_gateway_vpn           = optional(bool, true)
+      private_dns_zones                     = optional(bool, true)
+      private_dns_resolver                  = optional(bool, true)
+      nat_gateway                           = optional(bool, false)
     }), {})
 
     default_hub_address_space = optional(string)
@@ -158,7 +238,7 @@ variable "hub_virtual_networks" {
       subnet_address_prefix                             = optional(string)
       subnet_default_outbound_access_enabled            = optional(bool, false)
       firewall_policy_id                                = optional(string, null)
-      management_ip_enabled                             = optional(any, true)
+      management_ip_enabled                             = optional(bool, true)
       management_subnet_address_prefix                  = optional(string, null)
       management_subnet_default_outbound_access_enabled = optional(bool, false)
       private_ip_ranges                                 = optional(list(string))
@@ -371,7 +451,7 @@ variable "hub_virtual_networks" {
         })))
         express_route_remote_vnet_traffic_enabled = optional(bool, false)
         express_route_virtual_wan_traffic_enabled = optional(bool, false)
-        hosted_on_behalf_of_public_ip_enabled     = optional(any, true)
+        hosted_on_behalf_of_public_ip_enabled     = optional(bool, true)
         ip_configurations = optional(map(object({
           name                          = optional(string, null)
           apipa_addresses               = optional(list(string), null)
@@ -457,7 +537,7 @@ variable "hub_virtual_networks" {
         parent_id                             = optional(string)
         sku                                   = optional(string, "VpnGw1AZ")
         edge_zone                             = optional(string)
-        hosted_on_behalf_of_public_ip_enabled = optional(any, false)
+        hosted_on_behalf_of_public_ip_enabled = optional(bool, false)
         ip_configurations = optional(map(object({
           name                          = optional(string, null)
           apipa_addresses               = optional(list(string), null)
@@ -607,7 +687,7 @@ variable "hub_virtual_networks" {
 
     private_dns_zones = optional(object({
       parent_id                        = optional(string)
-      auto_registration_zone_enabled   = optional(any, true)
+      auto_registration_zone_enabled   = optional(bool, true)
       auto_registration_zone_name      = optional(string, null)
       auto_registration_zone_parent_id = optional(string, null)
 
@@ -1364,3 +1444,55 @@ DESCRIPTION
   }
 }
 
+variable "retry" {
+  type = object({
+    error_message_regex  = optional(list(string), ["ReferencedResourceNotProvisioned"])
+    interval_seconds     = optional(number, 10)
+    max_interval_seconds = optional(number, 180)
+  })
+  default     = {}
+  description = <<DESCRIPTION
+(Optional) An object defining the retry configuration for resource operations. This is useful for handling transient errors during resource provisioning.
+
+- `error_message_regex` - (Optional) A list of regular expressions to match against error messages. If a match is found, the operation will be retried. Default `["ReferencedResourceNotProvisioned"]`.
+- `interval_seconds` - (Optional) The initial interval in seconds between retry attempts. Default `10`.
+- `max_interval_seconds` - (Optional) The maximum interval in seconds between retry attempts. Default `180`.
+DESCRIPTION
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = null
+  description = <<DESCRIPTION
+(Optional) A map of tags to assign to the resources created by this module.
+These tags will be applied to all resources that support tagging, unless overridden by resource-specific tag configurations.
+Tags are key-value pairs that help you categorize resources and view consolidated billing by applying the same tag to multiple resources and resource groups.
+
+Example:
+```terraform
+tags = {
+  Environment = "Production"
+  CostCenter  = "IT"
+  Owner       = "Platform Team"
+}
+```
+DESCRIPTION
+}
+
+variable "timeouts" {
+  type = object({
+    create = optional(string, "60m")
+    read   = optional(string, "5m")
+    update = optional(string, "60m")
+    delete = optional(string, "60m")
+  })
+  default     = {}
+  description = <<DESCRIPTION
+(Optional) An object defining the timeout durations for resource operations. These values control how long Terraform will wait for each operation to complete.
+
+- `create` - (Optional) The timeout for create operations. Default `"60m"`.
+- `read` - (Optional) The timeout for read operations. Default `"5m"`.
+- `update` - (Optional) The timeout for update operations. Default `"60m"`.
+- `delete` - (Optional) The timeout for delete operations. Default `"60m"`.
+DESCRIPTION
+}
