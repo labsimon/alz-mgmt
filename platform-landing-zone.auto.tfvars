@@ -359,6 +359,7 @@ hub_virtual_networks = {
       }
     }
 
+
     private_dns_zones = {
       parent_id = "$${dns_resource_group_id}"
       private_link_private_dns_zones_regex_filter = {
@@ -376,8 +377,10 @@ hub_virtual_networks = {
     bastion = {
       subnet_address_prefix = "$${primary_bastion_subnet_address_prefix}"
       name                  = "$${primary_bastion_host_name}"
+      zones                 = []
       bastion_public_ip = {
-        name = "$${primary_bastion_host_public_ip_name}"
+        name  = "$${primary_bastion_host_public_ip_name}"
+        zones = []
       }
     }
   }
