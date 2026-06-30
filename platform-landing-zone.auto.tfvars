@@ -384,8 +384,10 @@ hub_virtual_networks = {
     bastion = {
       subnet_address_prefix = "$${primary_bastion_subnet_address_prefix}"
       name                  = "$${primary_bastion_host_name}"
+      zones                 = []
       bastion_public_ip = {
-        name = "$${primary_bastion_host_public_ip_name}"
+        name  = "$${primary_bastion_host_public_ip_name}"
+        zones = []
         # MCAP/sponsored subscriptions auto-inject this immutable ip_tag on every
         # public IP. Declaring it here keeps Terraform config in sync with the
         # platform-injected value so the bastion PIP does not perpetually churn
